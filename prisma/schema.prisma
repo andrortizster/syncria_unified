@@ -1,0 +1,235 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model countries {
+  id                      Int         @id @default(autoincrement())
+  name                    String      @unique
+  urlCode                 String
+  topCountry              Boolean
+  order                   Int
+  ticketEnabled           Boolean
+  requiresCookieConsent   Boolean
+  currency_id             Int
+  currency                currencies  @relation(fields: [currency_id], references: [id]) 
+  cities                  cities[]
+  areas                   areas[]
+}
+
+model cities {
+  id          Int      @id @default(autoincrement())
+  name        String
+  country_id  Int
+  country     countries @relation(fields: [country_id], references: [id])
+  venues      venues[]
+}
+
+model areas {
+  id          Int     @id @default(autoincrement())
+  name        String
+  country_id  Int
+  country     countries @relation(fields: [country_id], references: [id])
+  venues      venues[]  
+}
+
+model currencies {
+  id          Int             @id @default(autoincrement())
+  symbol      String
+  name        String
+  countries   countries[]
+  events      events[]
+}
+
+model venues {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  city_id             Int?
+  city                cities?   @relation(fields: [city_id], references: [id])
+  area_id             Int?
+  area                areas?    @relation(fields: [area_id], references: [id])
+  live                Boolean   @default(false)
+  capacity            String?
+  address             String?
+  phone               String?
+  raSays              Boolean   @default(false)
+  tba                 Boolean   @default(false)
+  isClosed            Boolean   @default(false)
+  website             String?
+  photo               String?
+  contentUrl          String?
+  logoUrl             String?
+  isFollowing         Boolean   @default(false)
+  followerCount       Int       @default(0)
+  eventCountThisYear  Int       @default(0)
+  events              events[]
+  promoters           promoters[]
+}
+
+model biography {
+  id            Int         @id @default(autoincrement())
+  blurb         String?
+  content       String?
+  discography   String?
+  artists       artists[]
+}
+
+model artists {
+  id                      Int               @id @default(autoincrement())
+  name                    String
+  firstName               String?
+  lastName                String?
+  image                   String?
+  image_url               String?
+  description             String?
+  url                     String?
+  url_safe_name           String?
+  booking_details         String?
+  aliases                 String?
+  pronouns                String?
+  facebook                String?
+  instagram               String?
+  twitter                 String?
+  soundcloud              String?
+  discogs                 String?
+  bandcamp                String?
+  website                 String?
+  status                  String?
+  listing_item_id         Int ?
+  index                   String?
+  cover_image             String?
+  content_url             String?
+  follower_count          Int?
+  isFollowing             Boolean
+  upcoming_events_count   Int?
+  view_count              Int?
+  biography_id            Int?
+  biography               biography?        @relation(fields: [biography_id], references: [id])
+  events                  event_artists[]
+  tracks                  artists_tracks[]
+}
+
+model events {
+  id                        Int                 @id @default(autoincrement())
+  name                      String
+  date                      String
+  venue_id                  Int
+  venues                    venues              @relation(fields: [venue_id], references: [id])
+  price                     String?
+  link                      String?
+  image                     String?
+  tag                       String?
+  description               String?
+  currency_id               Int?                @default(5)
+  currencies                currencies?         @relation(fields: [currency_id], references: [id])
+  live                      Boolean             @default(true)
+  capacity                  String
+  address                   String?
+  phone                     String?
+  ra_says                   Boolean             @default(false)
+  tba                       Boolean             @default(false)
+  is_closed                 Boolean             @default(false)
+  website                   String?
+  photo                     String?
+  content_url               String?
+  logo_url                  String?
+  is_following              Boolean             @default(false)
+  follower_count            Int?
+  event_count_this_year     Int?
+  title                     String?
+  start_time                String?
+  end_time                  String?
+  time                      String?
+  cost                      String?
+  is_festival               Boolean
+  date_updated              DateTime?
+  content                   String?
+  minimum_age               Int?
+  is_ticketed               Boolean             @default(false)
+  hide_from_listings        Boolean             @default(false)
+  index                     String?
+  new_event_form            Boolean             @default(false)
+  date_posted               DateTime?
+  date_created              DateTime?
+  submission_source         String?
+  ticket_fee_type           String?
+  approval_status           String?
+  visibility                String?
+  ticketing_system          String?
+  flyer_front               String?
+  flyer_back                String?
+  embargo_date              DateTime?
+  listing_item_id           Int?
+  auto_approved             Boolean             @default(false)
+  promoter_id               Int?
+  promoter                  promoters?          @relation(fields: [promoter_id], references: [id])
+  artists                   event_artists[]
+}
+
+model event_artists {
+  artist_id Int
+  artist    artists @relation(fields: [artist_id], references: [id])
+  event_id  Int
+  event     events  @relation(fields: [event_id], references: [id])
+  @@id([artist_id, event_id])
+}
+
+model tracks {
+  id            Int                       @id @default(autoincrement())
+  image_url     String?
+  title         String
+  label         String
+  genre         String
+  bpm           String
+  key           String
+  released      String
+  price         String
+  artists       artists_tracks[]
+}
+
+model artists_tracks {
+  artist_id Int
+  artist    artists         @relation(fields: [artist_id], references: [id])
+  track_id  Int
+  track     tracks          @relation(fields: [track_id], references: [id])
+  @@id([artist_id, track_id])
+}
+
+model promoters{
+  id                      Int         @id @default(autoincrement())
+  name                    String?
+  blurb                   String?
+  is_festival             Boolean     @default(false)
+  live                    Boolean     @default(false)
+  hasCover                Boolean     @default(false)
+  has_ticket_access       Boolean     @default(false)
+  venue_id                Int?
+  venue                   venues?     @relation(fields: [venue_id],references: [id])
+  website                 String?
+  facebook                String?
+  instagram               String?
+  twitter                 String?
+  terms_agreement         Boolean     @default(false)
+  listing_item_id         Int?
+  index                   String?
+  email                   String?
+  cover_url               String?
+  logo_url                String?
+  content_url             String?
+  follower_count          Int?
+  upcoming_events_count   Int?
+  is_following            Boolean     @default(false)
+  events                  events[]
+}
+
