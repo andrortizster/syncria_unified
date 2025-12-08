@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCurrencyDto } from './dto/create-currency.dto';
-import { UpdateCurrencyDto } from './dto/update-currency.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class CurrenciesService {
-  create(createCurrencyDto: CreateCurrencyDto) {
-    return 'This action adds a new currency';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createCurrencyDto: Prisma.currenciesCreateInput) {
+    return await this.databaseService.currencies.create({
+      data: createCurrencyDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all currencies`;
+  async findAll() {
+    return await this.databaseService.currencies.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} currency`;
+  async findOne(id: number) {
+    return await this.databaseService.currencies.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateCurrencyDto: UpdateCurrencyDto) {
-    return `This action updates a #${id} currency`;
+  async update(id: number, updateCurrencyDto: Prisma.currenciesUpdateInput) {
+    return await this.databaseService.currencies.update({
+      data: updateCurrencyDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} currency`;
+  async remove(id: number) {
+    return await this.databaseService.currencies.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

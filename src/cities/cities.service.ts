@@ -1,26 +1,58 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCityDto } from './dto/create-city.dto';
-import { UpdateCityDto } from './dto/update-city.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class CitiesService {
-  create(createCityDto: CreateCityDto) {
-    return 'This action adds a new city';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createCityDto: Prisma.citiesCreateInput) {
+    return await this.databaseService.cities.create({
+      data: createCityDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all cities`;
+  async findAll() {
+    return await this.databaseService.cities.findMany({
+      include: {
+        venues: {
+          include: {
+            events: true,
+          },
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} city`;
+  async findOne(id: number) {
+    return await this.databaseService.cities.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        venues: {
+          include: {
+            events: true,
+          },
+        },
+      },
+    });
   }
 
-  update(id: number, updateCityDto: UpdateCityDto) {
-    return `This action updates a #${id} city`;
+  async update(id: number, updateCityDto: Prisma.citiesUpdateInput) {
+    return await this.databaseService.cities.update({
+      data: updateCityDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} city`;
+  async remove(id: number) {
+    return await this.databaseService.cities.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

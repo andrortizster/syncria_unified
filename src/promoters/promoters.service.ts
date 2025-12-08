@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePromoterDto } from './dto/create-promoter.dto';
-import { UpdatePromoterDto } from './dto/update-promoter.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class PromotersService {
-  create(createPromoterDto: CreatePromoterDto) {
-    return 'This action adds a new promoter';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createPromoterDto: Prisma.promotersCreateInput) {
+    return await this.databaseService.promoters.create({
+      data: createPromoterDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all promoters`;
+  async findAll() {
+    return await this.databaseService.promoters.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} promoter`;
+  async findOne(id: number) {
+    return await this.databaseService.promoters.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updatePromoterDto: UpdatePromoterDto) {
-    return `This action updates a #${id} promoter`;
+  async update(id: number, updatePromoterDto: Prisma.promotersUpdateInput) {
+    return await this.databaseService.promoters.update({
+      data: updatePromoterDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} promoter`;
+  async remove(id: number) {
+    return await this.databaseService.promoters.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

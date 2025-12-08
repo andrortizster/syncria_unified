@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ArtistsTracksService } from './artists_tracks.service';
-import { CreateArtistsTrackDto } from './dto/create-artists_track.dto';
-import { UpdateArtistsTrackDto } from './dto/update-artists_track.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Controller('artists-tracks')
 export class ArtistsTracksController {
   constructor(private readonly artistsTracksService: ArtistsTracksService) {}
 
   @Post()
-  create(@Body() createArtistsTrackDto: CreateArtistsTrackDto) {
+  create(@Body() createArtistsTrackDto: Prisma.artists_tracksCreateInput) {
     return this.artistsTracksService.create(createArtistsTrackDto);
   }
 
@@ -17,18 +24,32 @@ export class ArtistsTracksController {
     return this.artistsTracksService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.artistsTracksService.findOne(+id);
+  @Get(':artist_id/:track_id')
+  findOne(
+    @Param('artist_id') artist_id: string,
+    @Param('track_id') track_id: string,
+  ) {
+    return this.artistsTracksService.findOne(+artist_id, +track_id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArtistsTrackDto: UpdateArtistsTrackDto) {
-    return this.artistsTracksService.update(+id, updateArtistsTrackDto);
+  @Patch(':artist_id/:track_id')
+  update(
+    @Param('artist_id') artist_id: string,
+    @Param('track_id') track_id: string,
+    @Body() updateArtistsTrackDto: Prisma.artists_tracksUpdateInput,
+  ) {
+    return this.artistsTracksService.update(
+      +artist_id,
+      +track_id,
+      updateArtistsTrackDto,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.artistsTracksService.remove(+id);
+  @Delete(':artist_id/:track_id')
+  remove(
+    @Param('artist_id') artist_id: string,
+    @Param('track_id') track_id: string,
+  ) {
+    return this.artistsTracksService.remove(+artist_id, +track_id);
   }
 }

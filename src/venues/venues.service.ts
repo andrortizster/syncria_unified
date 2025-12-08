@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVenueDto } from './dto/create-venue.dto';
-import { UpdateVenueDto } from './dto/update-venue.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class VenuesService {
-  create(createVenueDto: CreateVenueDto) {
-    return 'This action adds a new venue';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createVenueDto: Prisma.venuesCreateInput) {
+    return await this.databaseService.venues.create({
+      data: createVenueDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all venues`;
+  async findAll() {
+    return await this.databaseService.venues.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} venue`;
+  async findOne(id: number) {
+    return await this.databaseService.venues.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateVenueDto: UpdateVenueDto) {
-    return `This action updates a #${id} venue`;
+  async update(id: number, updateVenueDto: Prisma.venuesUpdateInput) {
+    return await this.databaseService.venues.update({
+      data: updateVenueDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} venue`;
+  async remove(id: number) {
+    return await this.databaseService.venues.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

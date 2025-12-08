@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CountriesService } from './countries.service';
-import { CreateCountryDto } from './dto/create-country.dto';
-import { UpdateCountryDto } from './dto/update-country.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Controller('countries')
 export class CountriesController {
   constructor(private readonly countriesService: CountriesService) {}
 
   @Post()
-  create(@Body() createCountryDto: CreateCountryDto) {
+  create(@Body() createCountryDto: Prisma.countriesCreateInput) {
     return this.countriesService.create(createCountryDto);
   }
 
@@ -23,7 +30,10 @@ export class CountriesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCountryDto: UpdateCountryDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCountryDto: Prisma.countriesUpdateInput,
+  ) {
     return this.countriesService.update(+id, updateCountryDto);
   }
 

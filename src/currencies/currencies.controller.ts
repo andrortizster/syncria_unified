@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CurrenciesService } from './currencies.service';
-import { CreateCurrencyDto } from './dto/create-currency.dto';
-import { UpdateCurrencyDto } from './dto/update-currency.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Controller('currencies')
 export class CurrenciesController {
   constructor(private readonly currenciesService: CurrenciesService) {}
 
   @Post()
-  create(@Body() createCurrencyDto: CreateCurrencyDto) {
+  create(@Body() createCurrencyDto: Prisma.currenciesCreateInput) {
     return this.currenciesService.create(createCurrencyDto);
   }
 
@@ -23,7 +30,10 @@ export class CurrenciesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCurrencyDto: UpdateCurrencyDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCurrencyDto: Prisma.currenciesUpdateInput,
+  ) {
     return this.currenciesService.update(+id, updateCurrencyDto);
   }
 

@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PromotersService } from './promoters.service';
-import { CreatePromoterDto } from './dto/create-promoter.dto';
-import { UpdatePromoterDto } from './dto/update-promoter.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Controller('promoters')
 export class PromotersController {
   constructor(private readonly promotersService: PromotersService) {}
 
   @Post()
-  create(@Body() createPromoterDto: CreatePromoterDto) {
+  create(@Body() createPromoterDto: Prisma.promotersCreateInput) {
     return this.promotersService.create(createPromoterDto);
   }
 
@@ -23,7 +30,10 @@ export class PromotersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePromoterDto: UpdatePromoterDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePromoterDto: Prisma.promotersUpdateInput,
+  ) {
     return this.promotersService.update(+id, updatePromoterDto);
   }
 

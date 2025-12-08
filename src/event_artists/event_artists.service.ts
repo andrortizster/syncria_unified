@@ -1,26 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEventArtistDto } from './dto/create-event_artist.dto';
-import { UpdateEventArtistDto } from './dto/update-event_artist.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class EventArtistsService {
-  create(createEventArtistDto: CreateEventArtistDto) {
-    return 'This action adds a new eventArtist';
+  constructor(private readonly databaseService: DatabaseService) {}
+
+  async create(createEventArtistDto: Prisma.event_artistsCreateInput) {
+    return await this.databaseService.event_artists.create({
+      data: createEventArtistDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all eventArtists`;
+  async findAll() {
+    return await this.databaseService.event_artists.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} eventArtist`;
+  async findOne(artist_id: number, event_id: number) {
+    return await this.databaseService.event_artists.findUnique({
+      where: {
+        artist_id_event_id: {
+          artist_id,
+          event_id,
+        },
+      },
+    });
   }
 
-  update(id: number, updateEventArtistDto: UpdateEventArtistDto) {
-    return `This action updates a #${id} eventArtist`;
+  async update(
+    artist_id: number,
+    event_id: number,
+    updateEventArtistDto: Prisma.event_artistsUpdateInput,
+  ) {
+    return await this.databaseService.event_artists.update({
+      where: {
+        artist_id_event_id: {
+          artist_id,
+          event_id,
+        },
+      },
+      data: updateEventArtistDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} eventArtist`;
+  async remove(artist_id: number, event_id: number) {
+    return await this.databaseService.event_artists.delete({
+      where: {
+        artist_id_event_id: {
+          artist_id,
+          event_id,
+        },
+      },
+    });
   }
 }

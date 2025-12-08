@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCountryDto } from './dto/create-country.dto';
-import { UpdateCountryDto } from './dto/update-country.dto';
+import { Prisma } from 'generated/prisma/client';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class CountriesService {
-  create(createCountryDto: CreateCountryDto) {
-    return 'This action adds a new country';
+  constructor(private readonly databaseService: DatabaseService) {}
+  async create(createCountryDto: Prisma.countriesCreateInput) {
+    return await this.databaseService.countries.create({
+      data: createCountryDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all countries`;
+  async findAll() {
+    return await this.databaseService.countries.findMany({
+      include: {
+        cities: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} country`;
+  async findOne(id: number) {
+    return await this.databaseService.countries.findUnique({
+      where: { id },
+      include: { cities: true },
+    });
   }
 
-  update(id: number, updateCountryDto: UpdateCountryDto) {
-    return `This action updates a #${id} country`;
+  async update(id: number, updateCountryDto: Prisma.countriesUpdateInput) {
+    return await this.databaseService.countries.update({
+      data: updateCountryDto,
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} country`;
+  async remove(id: number) {
+    return await this.databaseService.countries.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

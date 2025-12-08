@@ -3,30 +3,30 @@ import { Prisma } from 'generated/prisma/client';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
-export class TracksService {
+export class ArtistsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async create(createTrackDto: Prisma.tracksCreateInput) {
-    return this.databaseService.tracks.create({
-      data: createTrackDto,
+  async create(createArtistDto: Prisma.artistsCreateInput) {
+    return this.databaseService.artists.create({
+      data: createArtistDto,
     });
   }
 
   async findAll() {
-    return this.databaseService.tracks.findMany();
+    return this.databaseService.artists.findMany();
   }
 
   async findOne(id: number) {
-    return this.databaseService.tracks.findUnique({
+    return this.databaseService.artists.findUnique({
       where: {
         id,
       },
     });
   }
 
-  async update(id: number, updateTrackDto: Prisma.tracksUpdateInput) {
-    return this.databaseService.tracks.update({
-      data: updateTrackDto,
+  async update(id: number, updateArtistDto: Prisma.artistsUpdateInput) {
+    return this.databaseService.artists.update({
+      data: updateArtistDto,
       where: {
         id,
       },
@@ -34,7 +34,7 @@ export class TracksService {
   }
 
   async remove(id: number) {
-    return this.databaseService.tracks.delete({
+    return this.databaseService.artists.delete({
       where: {
         id,
       },

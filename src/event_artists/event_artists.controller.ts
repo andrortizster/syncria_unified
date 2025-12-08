@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { EventArtistsService } from './event_artists.service';
-import { CreateEventArtistDto } from './dto/create-event_artist.dto';
-import { UpdateEventArtistDto } from './dto/update-event_artist.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Controller('event-artists')
 export class EventArtistsController {
   constructor(private readonly eventArtistsService: EventArtistsService) {}
 
   @Post()
-  create(@Body() createEventArtistDto: CreateEventArtistDto) {
+  create(@Body() createEventArtistDto: Prisma.event_artistsCreateInput) {
     return this.eventArtistsService.create(createEventArtistDto);
   }
 
@@ -17,18 +24,32 @@ export class EventArtistsController {
     return this.eventArtistsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventArtistsService.findOne(+id);
+  @Get(':artistId/:eventId')
+  findOne(
+    @Param('artistId') artistId: string,
+    @Param('eventId') eventId: string,
+  ) {
+    return this.eventArtistsService.findOne(+artistId, +eventId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventArtistDto: UpdateEventArtistDto) {
-    return this.eventArtistsService.update(+id, updateEventArtistDto);
+  @Patch(':artistId/:eventId')
+  update(
+    @Param('artistId') artistId: string,
+    @Param('eventId') eventId: string,
+    @Body() updateEventArtistDto: Prisma.event_artistsUpdateInput,
+  ) {
+    return this.eventArtistsService.update(
+      +artistId,
+      +eventId,
+      updateEventArtistDto,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventArtistsService.remove(+id);
+  @Delete(':artistId/:eventId')
+  remove(
+    @Param('artistId') artistId: string,
+    @Param('eventId') eventId: string,
+  ) {
+    return this.eventArtistsService.remove(+artistId, +eventId);
   }
 }
