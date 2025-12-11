@@ -16,6 +16,14 @@ export class CurrenciesService {
     return await this.databaseService.currencies.findMany();
   }
 
+  async findOneByName(name: string) {
+    return await this.databaseService.currencies.findFirst({
+      where: {
+        name: name,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return await this.databaseService.currencies.findUnique({
       where: {

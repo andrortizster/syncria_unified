@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CountriesService } from './countries.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +24,14 @@ export class CountriesController {
   @Get()
   findAll() {
     return this.countriesService.findAll();
+  }
+
+  @Get('country')
+  async findByName(@Query('name') name: string) {
+    if (name) {
+      return await this.countriesService.findOneByName(name);
+    }
+    return { message: 'Country name is required' };
   }
 
   @Get(':id')

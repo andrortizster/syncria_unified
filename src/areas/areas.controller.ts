@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AreasService } from './areas.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,14 @@ export class AreasController {
   @Get()
   findAll() {
     return this.areasService.findAll();
+  }
+
+  @Get('area')
+  async findByName(@Query('url_name') url_name: string) {
+    if (url_name) {
+      return await this.areasService.findOneByName(url_name);
+    }
+    return { message: 'Area url name is required' };
   }
 
   @Get(':id')

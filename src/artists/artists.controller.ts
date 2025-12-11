@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,14 @@ export class ArtistsController {
   @Get()
   findAll() {
     return this.artistsService.findAll();
+  }
+
+  @Get('artist')
+  async findByName(@Query('name') name: string) {
+    if (name) {
+      return await this.artistsService.findOneByName(name);
+    }
+    return { message: 'Artist name is required' };
   }
 
   @Get(':id')

@@ -17,13 +17,13 @@ datasource db {
 model countries {
   id                      Int         @id @default(autoincrement())
   name                    String      @unique
-  urlCode                 String
-  topCountry              Boolean
-  order                   Int
-  ticketEnabled           Boolean
-  requiresCookieConsent   Boolean
-  currency_id             Int
-  currency                currencies  @relation(fields: [currency_id], references: [id]) 
+  urlCode                 String?
+  topCountry              Boolean     @default(false)
+  order                   Int?
+  ticketEnabled           Boolean     @default(false)
+  requiresCookieConsent   Boolean     @default(false) 
+  currency_id             Int?
+  currency                currencies?  @relation(fields: [currency_id], references: [id]) 
   cities                  cities[]
   areas                   areas[]
 }
@@ -37,17 +37,28 @@ model cities {
 }
 
 model areas {
-  id          Int     @id @default(autoincrement())
-  name        String
-  country_id  Int
-  country     countries @relation(fields: [country_id], references: [id])
-  venues      venues[]  
+  id                Int           @id   @default(autoincrement())
+  name              String
+  url_name          String        @unique
+  blurb             String?
+  population        Int?
+  iana_time_zone    String?
+  country_id        Int
+  is_country        Boolean       @default(true)
+  events_count      Int           @default(0)
+  venues_count      Int           @default(0)
+  guide_image_url   String?
+  country           countries     @relation(fields: [country_id], references: [id])
+  venues            venues[]
+  artists           artists[]  
 }
 
 model currencies {
   id          Int             @id @default(autoincrement())
   symbol      String
   name        String
+  code        String
+  exponent    Int
   countries   countries[]
   events      events[]
 }
@@ -79,6 +90,7 @@ model venues {
 
 model biography {
   id            Int         @id @default(autoincrement())
+  previous_id   Int?        @unique  
   blurb         String?
   content       String?
   discography   String?
@@ -88,8 +100,8 @@ model biography {
 model artists {
   id                      Int               @id @default(autoincrement())
   name                    String
-  firstName               String?
-  lastName                String?
+  first_name              String?
+  last_name               String?
   image                   String?
   image_url               String?
   description             String?
@@ -111,13 +123,15 @@ model artists {
   cover_image             String?
   content_url             String?
   follower_count          Int?
-  isFollowing             Boolean
+  is_following            Boolean           @default(false)
   upcoming_events_count   Int?
   view_count              Int?
   biography_id            Int?
   biography               biography?        @relation(fields: [biography_id], references: [id])
   events                  event_artists[]
   tracks                  artists_tracks[]
+  area_id                 Int?
+  area                    areas?            @relation(fields: [area_id], references: [id])  
 }
 
 model events {

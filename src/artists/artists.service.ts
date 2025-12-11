@@ -16,6 +16,14 @@ export class ArtistsService {
     return this.databaseService.artists.findMany();
   }
 
+  async findOneByName(name: string) {
+    return await this.databaseService.artists.findFirst({
+      where: {
+        name: name,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return this.databaseService.artists.findUnique({
       where: {

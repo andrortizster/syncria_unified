@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CurrenciesService } from './currencies.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,14 @@ export class CurrenciesController {
   @Get()
   findAll() {
     return this.currenciesService.findAll();
+  }
+
+  @Get('currency')
+  async findByName(@Query('name') name: string) {
+    if (name) {
+      return await this.currenciesService.findOneByName(name);
+    }
+    return { message: 'Currency name is required' };
   }
 
   @Get(':id')

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CitiesService } from './cities.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,14 @@ export class CitiesController {
   @Get()
   findAll() {
     return this.citiesService.findAll();
+  }
+
+  @Get('city')
+  async findByName(@Query('name') name: string) {
+    if (name) {
+      return await this.citiesService.findOneByName(name);
+    }
+    return { message: 'City name is required' };
   }
 
   @Get(':id')

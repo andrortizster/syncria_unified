@@ -24,6 +24,14 @@ export class AreasService {
     });
   }
 
+  async findOneByName(url_name: string) {
+    return await this.databaseService.areas.findUnique({
+      where: {
+        url_name: url_name,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return await this.databaseService.areas.findUnique({
       where: {

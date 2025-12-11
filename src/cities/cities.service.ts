@@ -24,6 +24,14 @@ export class CitiesService {
     });
   }
 
+  async findOneByName(name: string) {
+    return await this.databaseService.cities.findFirst({
+      where: {
+        name: name,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return await this.databaseService.cities.findUnique({
       where: {

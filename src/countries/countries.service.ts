@@ -21,7 +21,18 @@ export class CountriesService {
 
   async findOne(id: number) {
     return await this.databaseService.countries.findUnique({
-      where: { id },
+      where: {
+        id: id,
+      },
+      include: { cities: true },
+    });
+  }
+
+  async findOneByName(name: string) {
+    return await this.databaseService.countries.findUnique({
+      where: {
+        name: name,
+      },
       include: { cities: true },
     });
   }
