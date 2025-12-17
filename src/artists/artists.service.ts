@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { DatabaseService } from '../database/database.service';
+import { PaginationParams } from 'src/common/decorators/pagination.decorator';
 
 @Injectable()
 export class ArtistsService {
@@ -12,8 +13,23 @@ export class ArtistsService {
     });
   }
 
-  async findAll() {
-    return this.databaseService.artists.findMany();
+  async findAll({ skip, limit, page }: PaginationParams) {
+    const [data, total] = await Promise.all([
+      this.databaseService.artists.findMany({
+        skip,
+        take: limit,
+      }),
+      this.databaseService.events.count(),
+    ]);
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOneByName(name: string) {

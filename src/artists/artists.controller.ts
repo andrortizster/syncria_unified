@@ -10,6 +10,10 @@ import {
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { Prisma } from 'generated/prisma/client';
+import {
+  Pagination,
+  PaginationParams,
+} from '../common/decorators/pagination.decorator';
 
 @Controller('artists')
 export class ArtistsController {
@@ -21,8 +25,8 @@ export class ArtistsController {
   }
 
   @Get()
-  findAll() {
-    return this.artistsService.findAll();
+  findAll(@Pagination() pagination: PaginationParams) {
+    return this.artistsService.findAll(pagination);
   }
 
   @Get('artist')
