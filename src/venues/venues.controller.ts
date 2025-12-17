@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { VenuesService } from './venues.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,21 @@ export class VenuesController {
   @Get()
   findAll() {
     return this.venuesService.findAll();
+  }
+
+  @Get('venue')
+  async findByName(
+    @Query('name') name: string,
+    @Query('city_id') city_id: string,
+    @Query('area_id') area_id: string,
+  ) {
+    if (name && city_id) {
+      return await this.venuesService.findOneByName(name, +city_id);
+    }
+    if (name && area_id) {
+      return await this.venuesService.findOneByNameAndArea(name, +area_id);
+    }
+    return { message: 'Must have name and city or area' };
   }
 
   @Get(':id')

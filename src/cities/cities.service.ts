@@ -24,10 +24,19 @@ export class CitiesService {
     });
   }
 
+  async findOneByNameAndCountry(name: string, country_id: number) {
+    return await this.databaseService.cities.findFirst({
+      where: {
+        name,
+        country_id,
+      },
+    });
+  }
+
   async findOneByName(name: string) {
     return await this.databaseService.cities.findFirst({
       where: {
-        name: name,
+        name,
       },
     });
   }

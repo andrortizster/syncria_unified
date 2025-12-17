@@ -16,6 +16,24 @@ export class VenuesService {
     return await this.databaseService.venues.findMany();
   }
 
+  async findOneByName(name: string, city_id: number) {
+    return await this.databaseService.venues.findFirst({
+      where: {
+        name,
+        city_id,
+      },
+    });
+  }
+
+  async findOneByNameAndArea(name: string, area_id: number) {
+    return await this.databaseService.venues.findFirst({
+      where: {
+        name,
+        area_id,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return await this.databaseService.venues.findUnique({
       where: {

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { Prisma } from 'generated/prisma/client';
@@ -22,6 +23,14 @@ export class TracksController {
   @Get()
   findAll() {
     return this.tracksService.findAll();
+  }
+
+  @Get('track')
+  async findByName(@Query('title') title: string) {
+    if (title) {
+      return await this.tracksService.findOneByTitle(title);
+    }
+    return { message: 'Track title is required' };
   }
 
   @Get(':id')

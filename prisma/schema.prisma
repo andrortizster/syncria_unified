@@ -31,8 +31,8 @@ model countries {
 model cities {
   id          Int      @id @default(autoincrement())
   name        String
-  country_id  Int
-  country     countries @relation(fields: [country_id], references: [id])
+  country_id  Int?
+  country     countries? @relation(fields: [country_id], references: [id])
   venues      venues[]
 }
 
@@ -51,6 +51,7 @@ model areas {
   country           countries     @relation(fields: [country_id], references: [id])
   venues            venues[]
   artists           artists[]  
+  events            events[]
 }
 
 model currencies {
@@ -64,28 +65,28 @@ model currencies {
 }
 
 model venues {
-  id                  Int       @id @default(autoincrement())
-  name                String
-  city_id             Int?
-  city                cities?   @relation(fields: [city_id], references: [id])
-  area_id             Int?
-  area                areas?    @relation(fields: [area_id], references: [id])
-  live                Boolean   @default(false)
-  capacity            String?
-  address             String?
-  phone               String?
-  raSays              Boolean   @default(false)
-  tba                 Boolean   @default(false)
-  isClosed            Boolean   @default(false)
-  website             String?
-  photo               String?
-  contentUrl          String?
-  logoUrl             String?
-  isFollowing         Boolean   @default(false)
-  followerCount       Int       @default(0)
-  eventCountThisYear  Int       @default(0)
-  events              events[]
-  promoters           promoters[]
+  id                      Int       @id @default(autoincrement())
+  name                    String
+  city_id                 Int?
+  city                    cities?   @relation(fields: [city_id], references: [id])
+  area_id                 Int?
+  area                    areas?    @relation(fields: [area_id], references: [id])
+  live                    Boolean   @default(false)
+  capacity                String?
+  address                 String?
+  phone                   String?
+  ra_says                 Boolean   @default(false)
+  tba                     Boolean   @default(false)
+  is_closed               Boolean   @default(false)
+  website                 String?
+  photo                   String?
+  content_url             String?
+  logo_url                String?
+  is_following            Boolean   @default(false)
+  follower_count          Int       @default(0)
+  event_count_this_year   Int       @default(0)
+  events                  events[]
+  promoters               promoters[]
 }
 
 model biography {
@@ -148,7 +149,7 @@ model events {
   currency_id               Int?                @default(5)
   currencies                currencies?         @relation(fields: [currency_id], references: [id])
   live                      Boolean             @default(true)
-  capacity                  String
+  capacity                  String?
   address                   String?
   phone                     String?
   ra_says                   Boolean             @default(false)
@@ -166,7 +167,7 @@ model events {
   end_time                  String?
   time                      String?
   cost                      String?
-  is_festival               Boolean
+  is_festival               Boolean             @default(false)
   date_updated              DateTime?
   content                   String?
   minimum_age               Int?
@@ -188,6 +189,19 @@ model events {
   auto_approved             Boolean             @default(false)
   promoter_id               Int?
   promoter                  promoters?          @relation(fields: [promoter_id], references: [id])
+  image_url                 String?
+  event_url                 String?
+  rating                    Float?
+  reviews_count             Int?
+  date_range                String?
+  original_price            String?
+  discounted_price          String?
+  discount_label            String?
+  duration                  String?
+  accesibility              String?
+  age_requirements          String?
+  area_id                   Int?
+  area                      areas?              @relation(fields: [area_id], references: [id])
   artists                   event_artists[]
 }
 

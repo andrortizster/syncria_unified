@@ -16,6 +16,14 @@ export class TracksService {
     return this.databaseService.tracks.findMany();
   }
 
+  async findOneByTitle(title: string) {
+    return await this.databaseService.tracks.findFirst({
+      where: {
+        title: title,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return this.databaseService.tracks.findUnique({
       where: {
